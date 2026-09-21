@@ -1,0 +1,31 @@
+name: Daily GitHub Trending Telegram Digest
+
+on:
+  schedule:
+    # 23:00 UTC hôm trước = 06:00 AM sáng hôm sau (Giờ Việt Nam UTC+7)
+    - cron: '0 23 * * *'
+  # Cho phép bạn ấn nút "Run workflow" để gửi thử ngay trên giao diện GitHub
+  workflow_dispatch:
+
+jobs:
+  send-digest:
+    name: Crawl GitHub, Summarize with Gemini & Send to Telegram
+    runs-on: ubuntu-latest
+    timeout-minutes: 5 # Khóa an toàn 5 phút (thực tế chạy chỉ mất ~30 giây)
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Thiết lập môi trường Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Chạy Script Tổng Hợp & Bắn Telegram
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: node digest.mjs

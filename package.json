@@ -1,0 +1,9 @@
+{
+  "name": "daily-github-digest",
+  "version": "1.0.0",
+  "description": "Tự động thu thập GitHub trending repos, dùng Gemini Pro/Flash tóm tắt và gửi tin nhắn Telegram lúc 6:00 AM mỗi ngày.",
+  "type": "module",
+  "scripts": {
+    "start": "node digest.mjs"
+  }
+}
