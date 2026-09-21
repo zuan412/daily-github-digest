@@ -65,7 +65,7 @@ Yêu cầu định dạng bản tin Telegram (dùng định dạng HTML để hi
 
 LƯU Ý: Tuyệt đối không viết lan man, dùng thẻ HTML an toàn (<b>, <a>, <i>, <code>). Không dùng markdown để tránh lỗi parse của Telegram.`;
 
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key=${apiKey}`;
   const res = await fetch(url, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
