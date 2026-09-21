@@ -20,7 +20,7 @@ jobs:
       - name: Thiết lập môi trường Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
 
       - name: Chạy Script Tổng Hợp & Bắn Telegram
         env:

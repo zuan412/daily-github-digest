@@ -47,9 +47,13 @@ async function fetchTrendingRepos() {
 }
 
 async function summarizeWithGemini(repos, apiKey) {
+  const reposText = repos.slice(0, 12).map((r, i) => 
+    `${i + 1}. [${r.name}](${r.url}) (⭐ ${r.stars} | ${r.language})\n   Mô tả: ${r.description}`
+  ).join('\n');
+
   const prompt = `Bạn là một Tech Lead / Senior AI Engineer sành sỏi.
 Dưới đây là danh sách các repository đang nổi bật trên GitHub gần đây:
-${JSON.stringify(repos, null, 2)}
+${reposText}
 
 Nhiệm vụ của bạn:
 1. Hãy chọn lọc ra từ 3 đến 5 dự án XUẤT SẮC, ĐÁNG THỬ VÀ ĐÁNG XEM NHẤT (ưu tiên AI agent, công cụ dev, automation, open-source thú vị).
@@ -65,25 +69,58 @@ Yêu cầu định dạng bản tin Telegram (dùng định dạng HTML để hi
 
 LƯU Ý: Tuyệt đối không viết lan man, dùng thẻ HTML an toàn (<b>, <a>, <i>, <code>). Không dùng markdown để tránh lỗi parse của Telegram.`;
 
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key=${apiKey}`;
-  const res = await fetch(url, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      contents: [{ parts: [{ text: prompt }] }],
-      generationConfig: {
-        temperature: 0.3
-      }
-    })
-  });
+  const candidateModels = [
+    'gemini-3.5-flash-lite',
+    'gemini-3.6-flash',
+    'gemini-flash-latest'
+  ];
 
-  if (!res.ok) {
-    const errorText = await res.text();
-    throw new Error(`Gemini API error (${res.status}): ${errorText}`);
+  let lastError = null;
+
+  for (const model of candidateModels) {
+    for (let attempt = 1; attempt <= 2; attempt++) {
+      try {
+        console.log(`Đang gọi mô hình ${model} (lần thử ${attempt})...`);
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+        const res = await fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contents: [{ parts: [{ text: prompt }] }],
+            generationConfig: {
+              temperature: 0.3
+            }
+          })
+        });
+
+        if (res.ok) {
+          const data = await res.json();
+          if (data.candidates && data.candidates[0].content.parts[0].text) {
+            console.log(`✅ Mô hình ${model} đã hoàn thành phân tích xuất sắc.`);
+            return data.candidates[0].content.parts[0].text;
+          }
+        }
+
+        const errorText = await res.text();
+        console.warn(`Cảnh báo: ${model} trả về mã ${res.status}: ${errorText.slice(0, 100)}...`);
+        lastError = new Error(`Gemini API error (${res.status}): ${errorText}`);
+
+        // Nếu gặp lỗi 503 hoặc 429, chờ 3 giây rồi thử lại
+        if (res.status === 503 || res.status === 429) {
+          console.log(`Máy chủ Google đang bận, chờ 3 giây trước khi tiếp tục...`);
+          await new Promise(r => setTimeout(r, 3000));
+        } else {
+          break; // Lỗi khác thì chuyển model tiếp theo ngay
+        }
+      } catch (err) {
+        lastError = err;
+        console.warn(`Lỗi mạng khi gọi ${model}: ${err.message}`);
+        await new Promise(r => setTimeout(r, 2000));
+      }
+    }
   }
 
-  const data = await res.json();
-  return data.candidates[0].content.parts[0].text;
+  throw lastError || new Error('Không thể kết nối đến bất kỳ mô hình Gemini nào.');
 }
 
 async function sendTelegramMessage(botToken, chatId, message) {
