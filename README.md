@@ -15,12 +15,12 @@
 
 ---
 
-## 📌 Overview / Giới Thiệu
+## 📌 Overview
 
-Hệ thống tự động hóa 100% trên Cloud (GitHub Actions), chạy định kỳ lúc **06:00 AM hàng ngày** (GMT+7):
-1. **GitHub Discovery Engine:** Quét và phân tích các kho lưu trữ trending / breakout trên GitHub trong 24–48h qua (AI, Agent, MCP, DevTools).
-2. **LLM Synthesis:** Sử dụng **Google Gemini** lọc nhiễu, đánh giá tiềm năng kỹ thuật và tóm tắt 3–5 repo xuất sắc nhất.
-3. **Instant Telegram Delivery:** Gửi bản tin markdown định dạng trực quan thẳng về Telegram channel / bot cá nhân.
+A 100% serverless cloud automation pipeline running on GitHub Actions, scheduled daily at **06:00 AM (GMT+7)**:
+1. **GitHub Discovery Engine:** Scrapes and analyzes trending and breakout GitHub repositories over the past 24–48 hours across AI, Autonomous Agents, MCP, and Developer Tooling.
+2. **LLM Synthesis:** Leverages **Google Gemini** to filter out low-signal projects, assess technical substance, and distill key insights for top repositories.
+3. **Instant Telegram Delivery:** Formats and broadcasts visual Markdown briefings directly to private Telegram bots or broadcast channels.
 
 ```
 [ Scheduled Cron (06:00 AM) ]
@@ -43,39 +43,39 @@ Hệ thống tự động hóa 100% trên Cloud (GitHub Actions), chạy định
 
 ---
 
-## 🚀 Hướng Dẫn Kích Hoạt Nhanh (3 Phút)
+## 🚀 Quick Start (3-Minute Setup)
 
-### Bước 1: Khởi Tạo Telegram Bot (30s)
-1. Mở Telegram, tìm kiếm **`@BotFather`**.
-2. Gửi lệnh `/newbot` và đặt tên bot (ví dụ: `My Tech Digest`) cùng username (ví dụ: `zuan_digest_bot`).
-3. Lưu lại **HTTP API Token** được cấp (`1234567890:ABCdefGhIJKlmNoPQRsTUVwxyZ`).
+### Step 1: Create a Telegram Bot (30s)
+1. Open Telegram and search for **`@BotFather`**.
+2. Send the command `/newbot`, provide a display name (e.g., `My Tech Digest`) and a unique username (e.g., `my_tech_digest_bot`).
+3. Copy and save the provided **HTTP API Token** (`1234567890:ABCdefGhIJKlmNoPQRsTUVwxyZ`).
 
-### Bước 2: Lấy Chat ID (10s)
-1. Tìm bot **`@userinfobot`** (hoặc `@getmyid_bot`) trên Telegram và bấm **Start**.
-2. Copy con số `Id` (ví dụ: `987654321`).
-3. *Lưu ý:* Nhớ mở khung chat với bot bạn vừa tạo ở Bước 1 và bấm **Start** để cho phép bot gửi tin nhắn.
+### Step 2: Retrieve your Chat ID (10s)
+1. Search for **`@userinfobot`** (or `@getmyid_bot`) on Telegram and tap **Start**.
+2. Copy your numeric `Id` (e.g., `987654321`).
+3. *Note:* Ensure you open a chat with your newly created bot from Step 1 and press **Start** to authorize incoming messages.
 
-### Bước 3: Lấy Google Gemini API Key (10s)
-1. Truy cập [aistudio.google.com](https://aistudio.google.com/) (đăng nhập Google).
-2. Chọn **Get API key** $\rightarrow$ **Create API key** và copy mã khóa.
+### Step 3: Obtain Google Gemini API Key (10s)
+1. Navigate to [aistudio.google.com](https://aistudio.google.com/) and sign in with your Google account.
+2. Click **Get API key** $\rightarrow$ **Create API key** and copy your token.
 
-### Bước 4: Cấu Hình Secrets Trên GitHub
-Vào repository GitHub của bạn $\rightarrow$ **Settings** $\rightarrow$ **Secrets and variables** $\rightarrow$ **Actions** $\rightarrow$ Thêm 3 secrets:
-* `TELEGRAM_BOT_TOKEN`: Token lấy từ @BotFather.
-* `TELEGRAM_CHAT_ID`: ID lấy từ @userinfobot.
-* `GEMINI_API_KEY`: API Key lấy từ AI Studio.
+### Step 4: Configure GitHub Repository Secrets
+Navigate to your GitHub repository $\rightarrow$ **Settings** $\rightarrow$ **Secrets and variables** $\rightarrow$ **Actions** $\rightarrow$ Add 3 repository secrets:
+* `TELEGRAM_BOT_TOKEN`: The bot token obtained from @BotFather.
+* `TELEGRAM_CHAT_ID`: Your chat ID obtained from @userinfobot.
+* `GEMINI_API_KEY`: The API key from Google AI Studio.
 
 ---
 
-## ⚡ Kiểm Tra Ngay (Manual Trigger)
+## ⚡ Manual Verification Trigger
 
-1. Mở tab **Actions** trên GitHub repository.
-2. Chọn workflow **Daily GitHub Trending Telegram Digest**.
-3. Bấm **Run workflow** $\rightarrow$ **Run workflow**.
-4. Sau 20–30 giây, Telegram sẽ nhận ngay bản tin digest đầu tiên!
+1. Navigate to the **Actions** tab in your GitHub repository.
+2. Select the **Daily GitHub Trending Telegram Digest** workflow from the left sidebar.
+3. Click **Run workflow** $\rightarrow$ **Run workflow**.
+4. Within 20–30 seconds, your Telegram client will receive the first live intelligence digest!
 
 ---
 
 ## 📄 License
 
-Dự án phát hành dưới giấy phép [MIT License](LICENSE).
+Distributed under the [MIT License](LICENSE).
